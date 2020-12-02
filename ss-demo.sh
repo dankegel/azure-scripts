@@ -77,17 +77,6 @@ do_ss_mk() {
 
 do_delete() {
     set +e
-    az vm delete \
-      --yes \
-      --resource-group myResourceGroup \
-      --name myVM
-    az group delete \
-      --yes \
-      --name myResourceGroup
-    az vm delete \
-      --yes \
-      --resource-group myResourceGroup \
-      --name myVM
     az sig image-version delete \
       --resource-group myGalleryRG \
       --gallery-name myGallery \
@@ -98,6 +87,17 @@ do_delete() {
       --gallery-name myGallery \
       --gallery-image-definition myImageDefinition
     az sig delete --resource-group myGalleryRG --gallery-name myGallery
+    az vm delete \
+      --yes \
+      --resource-group myResourceGroup \
+      --name myVM
+    az vm delete \
+      --yes \
+      --resource-group myResourceGroup \
+      --name myVM
+    az group delete \
+      --yes \
+      --name myResourceGroup
 }
 
 usage() {
