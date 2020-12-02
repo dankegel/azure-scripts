@@ -35,7 +35,7 @@ do_src() {
 
     ip=$(az vm show -d -g myResourceGroup -n myVM --query publicIps -o tsv)
     sleep 5
-    ssh azureuser@$ip sudo apt install -y nginx
+    ssh -o StrictHostKeyChecking=no azureuser@$ip sudo apt install -y nginx
 }
 
 do_gallery_mk() {
@@ -78,21 +78,25 @@ do_ss_mk() {
 do_delete() {
     set +e
     az vm delete \
+      --yes \
       --resource-group myResourceGroup \
       --name myVM
-    az group delete --name myResourceGroup
+    az group delete \
+      --yes \
+      --name myResourceGroup
     az vm delete \
+      --yes \
       --resource-group myResourceGroup \
       --name myVM
     az sig image-version delete \
-       --resource-group myGalleryRG \
-       --gallery-name myGallery \
-       --gallery-image-definition myImageDefinition \
-       --gallery-image-version 1.0.0
+      --resource-group myGalleryRG \
+      --gallery-name myGallery \
+      --gallery-image-definition myImageDefinition \
+      --gallery-image-version 1.0.0
     az sig image-definition delete \
-       --resource-group myGalleryRG \
-       --gallery-name myGallery \
-       --gallery-image-definition myImageDefinition
+      --resource-group myGalleryRG \
+      --gallery-name myGallery \
+      --gallery-image-definition myImageDefinition
     az sig delete --resource-group myGalleryRG --gallery-name myGallery
 }
 
