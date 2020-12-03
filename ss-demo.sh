@@ -10,16 +10,33 @@ set -ex
 do_deps() {
     if ! az --version
     then
-      sudo apt-get update
-      sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
-      curl -sL https://packages.microsoft.com/keys/microsoft.asc |
-          gpg --dearmor |
-          sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
-      AZ_REPO=$(lsb_release -cs)
-      echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" |
-      sudo tee /etc/apt/sources.list.d/azure-cli.list
-      sudo apt-get update
-      sudo apt-get install azure-cli
+      if test -d /Library
+      then
+        brew install azure-cli
+      else
+        sudo apt-get update
+        sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
+        curl -sL https://packages.microsoft.com/keys/microsoft.asc |
+            gpg --dearmor |
+            sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
+        AZ_REPO=$(lsb_release -cs)
+        echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" |
+        sudo tee /etc/apt/sources.list.d/azure-cli.list
+        sudo apt-get update
+        sudo apt-get install azure-cli
+      fi
+      az login
+    fi
+
+    if ! jq --version
+    then
+      if test -d /Library
+      then
+        brew install jq
+      else
+        sudo apt-get update
+        sudo apt-get install -y jq
+      fi
     fi
 }
 
@@ -114,6 +131,6 @@ gallery-mk) do_gallery_mk;;
 iv-mk) do_iv_mk;;
 ss-mk) do_ss_mk;;
 delete) do_delete;;
-all) do_deps && do_src && do_gallery_mk && do_iv_mk && do_ss_mkö;;
+all) do_deps && do_src && do_gallery_mk && do_iv_mk && do_ss_mk;;
 *) echo "bad cmd $1"; usage; exit 1;;
 esac
