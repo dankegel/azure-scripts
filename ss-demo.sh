@@ -71,8 +71,6 @@ do_iv_mk() {
        --os-type Linux \
        --os-state specialized
 
-    az vm get-instance-view -g myResourceGroup -n myVM --query id 
-
     VMID=$(az vm get-instance-view -g myResourceGroup -n myVM --query id | tr -d '"')
     az sig image-version create \
         --resource-group myGalleryRG \
@@ -88,7 +86,7 @@ do_ss_mk() {
     az vmss create \
        --resource-group myResourceGroup \
        --name myScaleSet \
-       --image $IDID
+       --image $IDID \
        --specialized
 }
 
